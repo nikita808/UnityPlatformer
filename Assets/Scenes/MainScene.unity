@@ -4580,8 +4580,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a0f728bb739f7c4eaddedeb7b262482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RigidBody2D: {fileID: 651014939}
-  Animator: {fileID: 651014943}
+  _rigidBody2D: {fileID: 651014939}
+  _animator: {fileID: 651014943}
 --- !u!95 &651014943
 Animator:
   serializedVersion: 3

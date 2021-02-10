@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidBody2D;
     [SerializeField] private int cherries = 0;
     [SerializeField] private Text _text;
+    [SerializeField] private float hurtForce = 10f;
 
     private State _state = State.Idle;
 
@@ -23,6 +24,31 @@ public class PlayerController : MonoBehaviour
     {
         cherries++;
         _text.text = cherries.ToString();
+    }
+    
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy") )
+        {
+            if (_state == State.Falling)
+            {
+                Destroy(collision.gameObject);
+                Jump();
+            }
+            else
+            {
+                _state = State.Hurt;
+                if (collision.gameObject.transform.position.x > transform.position.x)
+                {
+                    _rigidBody2D.velocity = new Vector2(-hurtForce, _rigidBody2D.velocity.y);
+                }
+                else
+                {
+                    _rigidBody2D.velocity = new Vector2(hurtForce, _rigidBody2D.velocity.y);
+                }
+            }
+            
+        }
     }
     
     private void Start()
@@ -34,7 +60,13 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Movement();
+        if (_state != State.Hurt)
+        {
+            Movement();
+        }
+        
+        AnimState();
+        _animator.SetInteger(CurrentState, (int) _state);
     }
     
 
@@ -57,13 +89,9 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && _coll.IsTouchingLayers(groundMask))
         {
-            _rigidBody2D.velocity = new Vector2(_rigidBody2D.velocity.x, jumpForce);
-            _state = State.Jumping;
+            Jump();
         }
-
-
-        AnimState();
-        _animator.SetInteger(CurrentState, (int) _state);
+        
     }
 
     private void AnimState()
@@ -83,6 +111,13 @@ public class PlayerController : MonoBehaviour
                 _state = State.Idle;
             }
         }
+        else if (_state == State.Hurt)
+        {
+            if (Mathf.Abs(_rigidBody2D.velocity.x) < .1f)
+            {
+                _state = State.Idle;
+            }
+        }
 
         else if (Mathf.Abs(_rigidBody2D.velocity.x) > 2f)
         {
@@ -95,11 +130,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void Jump()
+    {
+        _rigidBody2D.velocity = new Vector2(_rigidBody2D.velocity.x, jumpForce);
+        _state = State.Jumping;
+    }
+
     private enum State
     {
         Idle,
         Running,
         Jumping,
-        Falling
+        Falling,
+        Hurt
     }
 }

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6902615758001164159}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -124,6 +124,9 @@ MonoBehaviour:
     m_Bits: 256
   speed: 7
   jumpForce: 12
+  cherries: 0
+  _text: {fileID: 0}
+  hurtForce: 10
 --- !u!95 &6902615758001164154
 Animator:
   serializedVersion: 3

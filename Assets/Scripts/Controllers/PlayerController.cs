@@ -11,28 +11,41 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private int cherries;
+    [SerializeField] private Text _text;
+    [SerializeField] private float hurtForce = 10f;
     private Animator _animator;
     private Collider2D _coll;
     private Rigidbody2D _rigidBody2D;
-    [SerializeField] private int cherries = 0;
-    [SerializeField] private Text _text;
-    [SerializeField] private float hurtForce = 10f;
 
     private State _state = State.Idle;
 
-    public void IncreaseCherries()
+    private void Start()
     {
-        cherries++;
-        _text.text = cherries.ToString();
+        _rigidBody2D = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
+        _coll = GetComponent<Collider2D>();
     }
-    
+
+    private void Update()
+    {
+        if (_state != State.Hurt)
+        {
+            Movement();
+        }
+
+        AnimState();
+        _animator.SetInteger(CurrentState, (int) _state);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy") )
+        if (collision.gameObject.CompareTag("Enemy"))
         {
+            var enemy = collision.gameObject.GetComponent<Enemy>();
             if (_state == State.Falling)
             {
-                Destroy(collision.gameObject);
+                enemy.JumpedOn();
                 Jump();
             }
             else
@@ -47,28 +60,15 @@ public class PlayerController : MonoBehaviour
                     _rigidBody2D.velocity = new Vector2(hurtForce, _rigidBody2D.velocity.y);
                 }
             }
-            
         }
-    }
-    
-    private void Start()
-    {
-        _rigidBody2D = GetComponent<Rigidbody2D>();
-        _animator = GetComponent<Animator>();
-        _coll = GetComponent<Collider2D>();
     }
 
-    private void Update()
+    public void IncreaseCherries()
     {
-        if (_state != State.Hurt)
-        {
-            Movement();
-        }
-        
-        AnimState();
-        _animator.SetInteger(CurrentState, (int) _state);
+        cherries++;
+        _text.text = cherries.ToString();
     }
-    
+
 
     private void Movement()
     {
@@ -91,7 +91,6 @@ public class PlayerController : MonoBehaviour
         {
             Jump();
         }
-        
     }
 
     private void AnimState()

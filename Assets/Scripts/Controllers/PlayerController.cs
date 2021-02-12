@@ -14,9 +14,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int cherries;
     [SerializeField] private Text _text;
     [SerializeField] private float hurtForce = 10f;
+    
     private Animator _animator;
     private Collider2D _coll;
     private Rigidbody2D _rigidBody2D;
+    private AudioSource _footstep;
 
     private State _state = State.Idle;
 
@@ -25,6 +27,8 @@ public class PlayerController : MonoBehaviour
         _rigidBody2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _coll = GetComponent<Collider2D>();
+        _footstep = GetComponent<AudioSource>();
+
     }
 
     private void Update()
@@ -133,6 +137,11 @@ public class PlayerController : MonoBehaviour
     {
         _rigidBody2D.velocity = new Vector2(_rigidBody2D.velocity.x, jumpForce);
         _state = State.Jumping;
+    }
+
+    private void Footstep()
+    {
+        _footstep.Play();
     }
 
     private enum State

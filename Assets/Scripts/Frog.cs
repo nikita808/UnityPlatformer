@@ -15,7 +15,6 @@ public class Frog : Enemy
     [SerializeField] private float jumpHeight;
     [SerializeField] private LayerMask groundMask;
     private Collider2D _coll;
-    private Rigidbody2D _rb;
 
     private bool facingLeft = true;
 
@@ -24,14 +23,13 @@ public class Frog : Enemy
     {
         base.Start();
         _coll = GetComponent<Collider2D>();
-        _rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
         if (Anim.GetBool(Jumping))
         {
-            if (_rb.velocity.y < .1f)
+            if (Rb.velocity.y < .1f)
             {
                 Anim.SetBool(Falling, true);
                 Anim.SetBool(Jumping, false);
@@ -39,7 +37,7 @@ public class Frog : Enemy
         }
 
 
-        if (_rb.IsTouchingLayers(groundMask) && Anim.GetBool(Falling))
+        if (Rb.IsTouchingLayers(groundMask) && Anim.GetBool(Falling))
         {
             Anim.SetBool(Falling, false);
         }
@@ -60,7 +58,7 @@ public class Frog : Enemy
                 if (_coll.IsTouchingLayers(groundMask))
                 {
                     // Jump
-                    _rb.velocity = new Vector2(-jumpLength, jumpHeight);
+                    Rb.velocity = new Vector2(-jumpLength, jumpHeight);
                     Anim.SetBool(Jumping, true);
                 }
             }
@@ -84,7 +82,7 @@ public class Frog : Enemy
                 if (_coll.IsTouchingLayers(groundMask))
                 {
                     // Jump
-                    _rb.velocity = new Vector2(jumpLength, jumpHeight);
+                    Rb.velocity = new Vector2(jumpLength, jumpHeight);
                     Anim.SetBool(Jumping, true);
                 }
             }
